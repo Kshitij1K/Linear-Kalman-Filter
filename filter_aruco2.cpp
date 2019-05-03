@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-
+#include <math.h>
 #define t 0.1
 
 using namespace Eigen;
@@ -25,11 +25,10 @@ MatrixXf covarx(6,6),covarpredictx(6,6);
 MatrixXf belangx(4,1),covarangx(4,1);
 MatrixXf kalmangain(6,3);
 MatrixXf g(3,1);
-MatrixXf imutemp(3,1);
+MatrixXf imutemp(3,1);  
 MatrixXf rotmat(3,3);
 geometry_msgs::PoseStamped output;
 Quaternionf q;
-
 void ImageCallback(const geometry_msgs::PoseStamped::ConstPtr& imgmsg){
     float xx,yy,zz;
     xx=imgmsg->pose.position.x;
@@ -45,18 +44,12 @@ void ImageCallback(const geometry_msgs::PoseStamped::ConstPtr& imgmsg){
     output.pose.orientation.z=imgmsg->pose.orientation.z;
     output.pose.orientation.w=imgmsg->pose.orientation.w;
     
-    //Code for predicting belief of x
-    belpredictx=Fk*belx+Bk*Imulinacc;
+    //Calculating new belief of x
+    belx=belpredictx+kalmangain*(Imagelinpos-(Hk*belpredictx));
 
-    //Code for predicting covariance of x
-    covarpredictx=(Fk*covarx)*Fktrn+Qk;
-
-    //Calculating kalman gain
-    MatrixXf temp2,temp3;
-    temp2=(Hk*covarpredictx)*Hktrn+Rk;
-    temp3=temp2.inverse();
-    kalmangain=(covarpredictx*Hktrn)*temp3;
-
+    //Calculating new covariance of x
+    covarx=covarpredictx-((kalmangain*Hk)*covarpredictx);
+    /*std::cout << "belx" << std::endl << belx << std::endl << std::endl;*/
 }
 
 void ImuCallback(const sensor_msgs::Imu::ConstPtr& msg){
@@ -74,36 +67,42 @@ void ImuCallback(const sensor_msgs::Imu::ConstPtr& msg){
     imutemp << Ax,Ay,Az;
     g << 0,0,-9.8;
     Imulinacc =imutemp+rotmat2*g; 
-    std::cout << Imulinacc << std::endl << imutemp<< std::endl << std::endl;
 
-    //Calculating new belief of x
-    belx=belpredictx+kalmangain*(Imagelinpos-(Hk*belpredictx));
+    //Code for predicting belief of x
+    belpredictx=Fk*belx+Bk*Imulinacc;
 
-    //Calculating new covariance of x
-    covarx=covarpredictx-((kalmangain*Hk)*covarpredictx);
-    std::cout << "belx" << std::endl << belx << std::endl << std::endl ;
+    //Code for predicting covariance of x
+    covarpredictx=(Fk*covarx)*Fktrn+Qk;
+
+    //Calculating kalman gain
+    MatrixXf temp2,temp3;
+    temp2=(Hk*covarpredictx)*Hktrn+Rk;
+    temp3=temp2.inverse();
+    kalmangain=(covarpredictx*Hktrn)*temp3;
+
+    
 
     output.pose.position.x=belx(0,0);
     output.pose.position.y=belx(1,0);
-    output.pose.position.z=belx(2,0);
+    output.pose.position.z=belx(2,0); 
 }
 
 int main(int argc, char** argv){
-    ros::init(argc,argv,"ImageFused");
-    ros::NodeHandle nh;
-    ros::Subscriber Image=nh.subscribe("/object/rote",100,ImageCallback);
-    ros::Subscriber Imu=nh.subscribe("/mavros/imu/data",100,ImuCallback);
-    ros::Publisher fused=nh.advertise<geometry_msgs::PoseStamped>("/package/position", 1000);
+  ros::init(argc,argv,"ImageFused");
+  ros::NodeHandle nh;     
+  ros::Subscriber  Image=nh.subscribe("/package/position",100,ImageCallback); /*/aruco_single/pose*/
+  ros::Subscriber Imu=nh.subscribe("/icarus/imu",100,ImuCallback);
+  ros::Publisher fused = nh.advertise<geometry_msgs::PoseStamped>("/icarus/command/pose", 1000);     
     Hk << 1,0,0,0,0,0,
           0,1,0,0,0,0,
           0,0,1,0,0,0;
 
-    belx << 1,
-            1,
-            1,
+    belx << 0,
+            0,
+            6,
             0,
             0,
-            0;
+            0;   
 
     Hktrn << 1,0,0,
              0,1,0,
@@ -140,23 +139,19 @@ int main(int argc, char** argv){
           0,0,0,0,1,0,
           0,0,0,0,0,1;
 
-    Qk << 0.1,0,0,0,0,0,
-          0,0.1,0,0,0,0,
-          0,0,0.1,0,0,0,
-          0,0,0,0.1,0,0,
-          0,0,0,0,0.1,0,
-          0,0,0,0,0,0.1;
+    Qk << 0.4,0,0,0,0,0,
+          0,0.4,0,0,0,0,
+          0,0,0.4,0,0,0,
+          0,0,0,0.4,0,0,
+          0,0,0,0,0.4,0,
+          0,0,0,0,0,0.4;
 
-    Rk << 0,0,0,
-          0,0,0,
-          0,0,0;
-    ros::Rate loop_rate(15);
-    /*ros::spin();*/  
+    Rk << 0.2,0,0,
+          0,0.2,0,  
+          0,0,0.2;
 
+    ros::Rate loop_rate(100);
     while(ros::ok()){
-        
-        geometry_msgs::PoseStamped output1;
-        output1.pose.position.x=23;
         fused.publish(output);
         ros::spinOnce();
         loop_rate.sleep();
