@@ -1,5 +1,5 @@
 # Filters
-<<<<<<< HEAD
+
 Filters for getting accurate data
 
 For now, only a Linear Kalman Filter Algorithm has been uploaded
