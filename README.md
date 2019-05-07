@@ -1,4 +1,5 @@
 # Filters
+<<<<<<< HEAD
 Filters for getting accurate data
 
 For now, only a Linear Kalman Filter Algorithm has been uploaded
@@ -10,3 +11,9 @@ Please read [Bzarg's website](http://www.bzarg.com/p/how-a-kalman-filter-works-i
 
 For installation and use, please check the wiki.
 
+=======
+Filters for getting accurate data.
+
+For now, a modular Kalman Filter for ROS has been uploaded. This has been written for a specific use case, however by changing Params.yaml
+and making minor changes to the callback functions, this can be implemented anywhere.
+>>>>>>> 90daf37e58d57bad4b015d64c107bd4c9fb0e193
