@@ -34,10 +34,10 @@ covarx - Current covariance of X
 covarhatx - Predicted covariance of X
 KGain - Kalman Gain
 */
-MatrixXf Xk(6,1),Xhatk(6,1); 
-MatrixXf Zk(3,1),Uk(3,1);
-MatrixXf CovarX,CovarhatX(6,6);
-MatrixXf KGain(6,3);
+MatrixXf Xk,Xhatk; 
+MatrixXf Zk,Uk;
+MatrixXf CovarX,CovarhatX;
+MatrixXf KGain;
 
 /*
 Miscellaneous vectors/matrices for converting incoming data into a useable form.
@@ -90,7 +90,9 @@ void Load_Params(ros::NodeHandle nh){
 	Bk.resize(Bkrows,Bkcolumns);
 	Rk.resize(Rkrows,Rkcolumns);
 	CovarX.resize(Covar_order,Covar_order);
+	CovarhatX.resize(Covar_order,Covar_order);
 	Xk.resize(Xkorder,1);
+	Xhatk.resize(Xkorder,1)
 	Zk.resize(Zkorder,1);
 	Uk.resize(Ukorder,1);
 	KGain.resize(KGainr,KGainc);
@@ -108,16 +110,6 @@ void Load_Params(ros::NodeHandle nh){
 			Hk(i,j)=temp;
 		}
 	}
-
-/*	for (int i=0;i<Hkrows;i++){
-		for (int j=0;j<Hkcolumns;j++){
-			str[3]='0'+i;
-			str[4]='0'+j;
-			float temp;
-			nh.getParam(str,temp);
-			Hktrn(j	,i)=temp;
-		}
-	}*/
 
 	char QkStr[]="/KalmanFilter/Qk00";	
 	for (int i=0;i<Qkrows;i++){
@@ -138,16 +130,6 @@ void Load_Params(ros::NodeHandle nh){
 			Fk(i,j)=temp;
 		}
 	}
-
-/*	for (int i=0;i<Fkrows;i++){
-		for (int j=0;j<Fkcolumns;j++){
-			str2[3]='0'+i;
-			str2[4]='0'+j;
-			float temp;
-			nh.getParam(str2,temp);
-			Fktrn(j,i)=temp;
-		}
-	}*/
 
 	char BkStr[]="/KalmanFilter/Bk00";	
 	for (int i=0;i<Bkrows;i++){
