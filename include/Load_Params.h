@@ -92,7 +92,7 @@ void Load_Params(ros::NodeHandle nh){
 	CovarX.resize(Covar_order,Covar_order);
 	CovarhatX.resize(Covar_order,Covar_order);
 	Xk.resize(Xkorder,1);
-	Xhatk.resize(Xkorder,1)
+	Xhatk.resize(Xkorder,1);
 	Zk.resize(Zkorder,1);
 	Uk.resize(Ukorder,1);
 	KGain.resize(KGainr,KGainc);
