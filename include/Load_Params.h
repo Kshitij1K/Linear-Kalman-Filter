@@ -39,15 +39,6 @@ MatrixXf Zk,Uk;
 MatrixXf CovarX,CovarhatX;
 MatrixXf KGain;
 
-/*
-Miscellaneous vectors/matrices for converting incoming data into a useable form.
-Can be omitted/changed according to needs  
-*/
-MatrixXf g(3,1);
-MatrixXf imutemp(3,1);  
-MatrixXf rotmat(3,3);
-Quaternionf q;
-
 void Load_Params(ros::NodeHandle nh){
 	
 	//Information about rows and columns of the required matrices
