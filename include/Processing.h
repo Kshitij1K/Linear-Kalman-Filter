@@ -57,17 +57,17 @@ MatrixXf ZkProcess(const geometry_msgs::PoseStamped::ConstPtr& measurement){
 }
 
 //Function for the preprocessing of the output message. Takes the measurement message(measure) and Belief(Xk) and returns output message(result)
-geometry_msgs::PoseStamped OutputProcess (MatrixXf Belief,geometry_msgs::PoseStamped::ConstPtr& measure){
+geometry_msgs::PoseStamped OutputProcess (MatrixXf Belief,geometry_msgs::PoseStamped measure){
 
 	geometry_msgs::PoseStamped result;
 
-	result.header.stamp=measure->header.stamp;
-    result.header.seq=measure->header.seq;
-    result.header.frame_id=measure->header.frame_id;
-    result.pose.orientation.x=measure->pose.orientation.x;
-    result.pose.orientation.y=measure->pose.orientation.y;
-    result.pose.orientation.z=measure->pose.orientation.z;
-    result.pose.orientation.w=measure->pose.orientation.w;
+	result.header.stamp=measure.header.stamp;
+    result.header.seq=measure.header.seq;
+    result.header.frame_id=measure.header.frame_id;
+    result.pose.orientation.x=measure.pose.orientation.x;
+    result.pose.orientation.y=measure.pose.orientation.y;
+    result.pose.orientation.z=measure.pose.orientation.z;
+    result.pose.orientation.w=measure.pose.orientation.w;
     
     result.pose.position.x=Belief(0,0);
     result.pose.position.y=Belief(1,0);
