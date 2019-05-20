@@ -35,10 +35,10 @@ You need to change every parameter here, according to your sensor model. All the
 In the line 17, change the message type inside the angular brackets <> to whatever message type you want to publish.
 
 ###### Changes to Prediction.h
-In the line 6, change the argument of the function to whatever message type your are going to use for the prediction step. It should be a constant pointer.
+In the line 6, change the argument of the function to whatever message type you are going to use for the prediction step. It should be a constant pointer.
 
 ###### Changes to Update.h
-In the line 6, change the argument of the function to whatever message type your are going to use for the update step. It should be a constant pointer.
+In the line 6, change the argument of the function to whatever message type you are going to use for the update step. It should be a constant pointer.
 
 ###### Changes to Processing.h
 In this file, you need to do the following
