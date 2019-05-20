@@ -48,11 +48,6 @@ MatrixXf imutemp(3,1);
 MatrixXf rotmat(3,3);
 Quaternionf q;
 
-//Output to be published. Can be of different type for different needs
-geometry_msgs::PoseStamped output;
-
-
-
 void Load_Params(ros::NodeHandle nh){
 	
 	//Information about rows and columns of the required matrices

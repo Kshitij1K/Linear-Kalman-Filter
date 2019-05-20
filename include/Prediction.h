@@ -5,7 +5,7 @@ The argument can be changed to that of incoming message
 
 void Prediction_step(const sensor_msgs::Imu::ConstPtr& control){
      
-    Uk=UkProcess(control);
+    Uk=UkProcess(*control);
 
     //Predicting belief of x
     Xhatk=Fk*Xk+Bk*Uk;

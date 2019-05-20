@@ -1,6 +1,3 @@
-//Output to be published. Can be of different type for different needs
-geometry_msgs::PoseStamped output;
-
 #include "Processing.h"
 #include "Load_Params.h"
 #include "Update.h"
@@ -27,3 +24,4 @@ int main(int argc, char** argv){
     }
     return 0;
 }       
+

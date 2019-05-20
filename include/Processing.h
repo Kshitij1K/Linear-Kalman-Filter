@@ -21,7 +21,7 @@ The Following functions are for processing the various vectors. Please change th
 */
 
 //Function for the preprocessing of the control vector. Takes the control message(control) and returns Uk(result)
-MatrixXf UkProcess(const sensor_msgs::Imu::ConsPtr& control){
+MatrixXf UkProcess(sensor_msgs::Imu control){
 	
 	/*
 	Miscellaneous vectors/matrices for converting incoming data into a useable form.
@@ -29,21 +29,19 @@ MatrixXf UkProcess(const sensor_msgs::Imu::ConsPtr& control){
 	*/
 	MatrixXf g(3,1);
 	MatrixXf imutemp(3,1);  
-	MatrixXf rotmat(3,3);
-	Quaternionf q;
 
 	MatrixXf result(3,1);
 
     float Ax,Ay,Az;
     float Angx,Angy,Angz;    
     Quaternionf q,qrev;
-    q = Quaternionf(control->orientation.w, control->orientation.x, control->orientation.y, control->orientation.z);
+    q = Quaternionf(control.orientation.w, control.orientation.x, control.orientation.y, control.orientation.z);
     MatrixXf rotmat = q.toRotationMatrix();
     MatrixXf rotmat2=rotmat.inverse();
 
-    Ax=control->linear_acceleration.x;
-    Ay=control->linear_acceleration.y;
-    Az=control->linear_acceleration.z;
+    Ax=control.linear_acceleration.x;
+    Ay=control.linear_acceleration.y;
+    Az=control.linear_acceleration.z;
     imutemp << Ax,Ay,Az;
     g << 0,0,-9.8;
     result =imutemp+rotmat2*g;
@@ -77,3 +75,4 @@ geometry_msgs::PoseStamped OutputProcess (MatrixXf Belief,geometry_msgs::PoseSta
 
     return result;
 }
+
